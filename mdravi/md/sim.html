@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELA DISSE SIM! 💖💍</title>
+
+<style>
+    body {
+        background: radial-gradient(circle at top, #ffb3da, #ff84c2, #ff6fa8);
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 40px;
+        color: white;
+        overflow: hidden;
+    }
+
+    h1 {
+        font-size: 40px;
+        text-shadow: 0 0 20px white;
+        animation: fadeUp 1.5s ease;
+        margin-bottom: 10px;
+    }
+
+    p {
+        font-size: 22px;
+        margin-bottom: 20px;
+        animation: fadeUp 2s ease;
+        text-shadow: 0 0 10px white;
+    }
+
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* CORAÇÕES */
+    .heart {
+        position: fixed;
+        bottom: -20px;
+        color: #ff1e75;
+        font-size: 22px;
+        animation: subir 6s infinite ease-in;
+        opacity: 0.8;
+        pointer-events: none;
+    }
+
+    @keyframes subir {
+        0% { transform: translateY(0) scale(1); opacity: 0.8; }
+        100% { transform: translateY(-120vh) scale(1.8); opacity: 0; }
+    }
+
+    /* GLITTER */
+    .glitter {
+        position: fixed;
+        top: -10px;
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 0 10px white;
+        animation: cair 4s infinite linear;
+        opacity: 0.7;
+        pointer-events: none;
+    }
+
+    @keyframes cair {
+        0% { transform: translateY(0); opacity: 1; }
+        100% { transform: translateY(120vh); opacity: 0; }
+    }
+
+    /* CANVAS DOS FOGOS */
+    canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+</style>
+</head>
+<body>
+
+<h1>ELA DISSE SIM!!! 💖💍✨</h1>
+<p>EU SOU O CARA MAIS FELIZ DO MUNDO! ✨</p>
+
+<canvas id="fogos"></canvas>
+<div id="confetes"></div>
+
+<script>
+    // CORAÇÕES
+    for (let i = 0; i < 12; i++) {
+        let h = document.createElement("div");
+        h.classList.add("heart");
+        h.style.left = Math.random() * 100 + "%";
+        h.style.animationDelay = Math.random() * 4 + "s";
+        h.innerHTML = "❤";
+        document.body.appendChild(h);
+    }
+
+    // GLITTER
+    for (let i = 0; i < 8; i++) {
+        let g = document.createElement("div");
+        g.classList.add("glitter");
+        g.style.left = Math.random() * 100 + "%";
+        g.style.animationDuration = (3 + Math.random() * 3) + "s";
+        document.body.appendChild(g);
+    }
+
+    // CONFETES
+    function soltarConfete() {
+        const area = document.getElementById("confetes");
+        for (let i = 0; i < 50; i++) {
+            const pedaco = document.createElement("div");
+            pedaco.style.position = "fixed";
+            pedaco.style.width = "12px";
+            pedaco.style.height = "16px";
+            pedaco.style.background = `hsl(${Math.random()*360}, 90%, 60%)`;
+            pedaco.style.top = "-20px";
+            pedaco.style.left = Math.random()*100 + "%";
+            pedaco.style.opacity = "0.9";
+            pedaco.style.transform = `rotate(${Math.random()*360}deg)`;
+            pedaco.style.animation = `confeteFall ${2 + Math.random()*3}s ease-out`; 
+            area.appendChild(pedaco);
+            setTimeout(()=>pedaco.remove(), 6000);
+        }
+    }
+
+    // Animação dos confetes
+    const estilo = document.createElement("style");
+    estilo.innerHTML = `
+    @keyframes confeteFall {
+        0%{transform:translateY(0);}
+        100%{transform:translateY(120vh);}
+    }`;
+    document.head.appendChild(estilo);
+
+    // FOGOS
+    const canvas = document.getElementById("fogos");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    function fogo(x, y) {
+        let particulas = [];
+        for (let i = 0; i < 30; i++) {
+            particulas.push({
+                x, y,
+                raio: 2,
+                cor: `hsl(${Math.random()*360}, 100%, 50%)`,
+                vx: Math.random()*4 - 2,
+                vy: Math.random()*4 - 2,
+                vida: 60
+            });
+        }
+        return particulas;
+    }
+
+    function explodir() {
+        const x = Math.random()*canvas.width;
+        const y = Math.random()*canvas.height/2;
+        foguinhos.push(...fogo(x,y));
+    }
+
+    let foguinhos = [];
+    function animarFogos() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        foguinhos.forEach((p,i)=>{
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.02;
+            p.vida--;
+            ctx.beginPath();
+            ctx.fillStyle = p.cor;
+            ctx.arc(p.x,p.y,p.raio,0,Math.PI*2);
+            ctx.fill();
+            if (p.vida <= 0) foguinhos.splice(i,1);
+        });
+        requestAnimationFrame(animarFogos);
+    }
+    animarFogos();
+
+    // INICIAR FOGOS E CONFETES
+    for (let i=0; i<8; i++) {
+        setTimeout(explodir, i*700);
+        setTimeout(soltarConfete, i*700);
+    }
+</script>
+
+</body>
+</html>
